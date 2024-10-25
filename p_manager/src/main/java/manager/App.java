@@ -870,7 +870,7 @@ public class App extends Application {
             timeChanged = timer.timerChanger();
         });
         /* ------------------------------------------------------------------------------------------------------------------------------------- */
-        // Alert debugger
+        // Alert debugger TODO: Implement this so it is used
         /* ------------------------------------------------------------------------------------------------------------------------------------- */
         Alert a = new Alert(AlertType.INFORMATION);
 

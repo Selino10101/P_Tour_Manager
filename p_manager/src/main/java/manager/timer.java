@@ -1,6 +1,8 @@
 package manager;
 
 
+import java.util.Arrays;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -26,6 +28,8 @@ public class timer {
     private int big;
     int defaultTime = 30;
     //boolean timeChanged = false;
+    private int[] Blinds = new int[50];
+    private int counter = 1;
 
     /* ------------------------------------------------------------------------------------------------------------------------------------- */
     // Timer funktionen som startar timern med rätt värden
@@ -34,6 +38,7 @@ public class timer {
         if(!timeChanged) {
             small = smallBlind;
             big = bigBlind;
+            calculateBlind(bigBlind, Blinds);
         }
         
         timeRemaining = time;
@@ -48,13 +53,20 @@ public class timer {
                     timeRemaining--;
                     label.setText(String.format("%02d:%02d", timeRemaining / 60, timeRemaining % 60));
                     if(timeRemaining <= 0) {
+                        
                         if(!pauseField.getText().isEmpty()) {
                             defaultTime = Integer.parseInt(pauseField.getText());
                         }
                         // Stoppa in de nya funktionerna smallBlindCalculator och
                         // bigBlindCalculator.
-                        small = blindCalculator(small);
-                        big = blindCalculator(big);
+                        //small = blindCalculator(small);
+                        //big = blindCalculator(big);
+                        if(counter < Blinds.length) {
+                            big = Blinds[counter];
+                            small = big / 2;
+                            counter++;
+                        }
+                        
                         smallBlindLabel.setText(String.format("%02d", small));
                         bigBlindLabel.setText(String.format("%02d", big));
                         //timeline.stop();
@@ -76,7 +88,7 @@ public class timer {
 
     }
     /* ------------------------------------------------------------------------------------------------------------------------------------- */
-    // Tids ändrare som sparar blindsen.
+    // Tidsändrare som sparar blindsen.
     /* ------------------------------------------------------------------------------------------------------------------------------------- */
     public boolean timerChanger() {
         pause();
@@ -115,11 +127,38 @@ public class timer {
         }
         
     }
-    /*
+    /* -----------------------------------------------------------------------------------------------------------------------------------------
      * Test blindscalculator 
      */
-    public static int calculateBlind(int startBB) {
-        int 
+    public static void calculateBlind(int startBB, int[] Blinds) {
+        int currentBB = startBB; // ändra till big
+        for (int i = 1; i < Blinds.length; i++) {
+            //System.out.println("Nivå " + i + ": Small Blind = " + currentBB / 2 + ", Big Blind = " + currentBB);
+            
+            if (currentBB < 200) {
+                currentBB += startBB;  // Öka Big Blind med startvärdet
+            }
+            else if(currentBB >= 200 && currentBB < 1000) {
+                currentBB += 100;
+            }
+            else if(currentBB >= 1000 && currentBB < 2000) {
+                currentBB += 200;
+            }
+            else if(currentBB >= 2000 && currentBB < 4000) {
+                currentBB += 500;
+            }
+            else if(currentBB >= 4000 && currentBB < 10000) {
+                currentBB += 1000;
+            }
+            else if(currentBB >= 10000 && currentBB < 20000) {
+                currentBB += 2000;
+            }
+            else if(currentBB >= 20000) {
+                currentBB += 5000;
+            }
+            Blinds[i] = currentBB;
+        }
+        System.out.println(Arrays.toString(Blinds));
     }
     /* ------------------------------------------------------------------------------------------------------------------------------------- */
     // Timer paus mellan varje blindhöjning
